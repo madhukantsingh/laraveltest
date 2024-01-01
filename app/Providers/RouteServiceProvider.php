@@ -28,32 +28,32 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->configureRateLimiting();
 
-        // $this->routes(function () {
-        //     Route::middleware('api')
-        //         ->prefix('api/user')
-        //         ->group(base_path('routes/api.php'));
-
-        //     Route::middleware('web')
-        //         ->group(base_path('routes/web.php'));
-        // });
         $this->routes(function () {
             Route::middleware('api')
                 ->prefix('api/user')
-                ->group(function () {
-                    $this->app->instance('database.connection', 'mysql');
-                    require base_path('routes/api.php');
-                });
-        
-            Route::middleware('api')
-                ->prefix('api/user2')
-                ->group(function () {
-                    $this->app->instance('database.connection', 'mysql_second');
-                    require base_path('routes/api.php');
-                });
-        
+                ->group(base_path('routes/api.php'));
+
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
         });
+        // $this->routes(function () {
+        //     Route::middleware('api')
+        //         ->prefix('api/user')
+        //         ->group(function () {
+        //             $this->app->instance('database.connection', 'mysql');
+        //             require base_path('routes/api.php');
+        //         });
+        
+        //     Route::middleware('api')
+        //         ->prefix('api/user2')
+        //         ->group(function () {
+        //             $this->app->instance('database.connection', 'mysql_second');
+        //             require base_path('routes/api.php');
+        //         });
+        
+        //     Route::middleware('web')
+        //         ->group(base_path('routes/web.php'));
+        // });
         
     }
 

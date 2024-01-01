@@ -10,13 +10,13 @@ use Illuminate\Support\Facades\DB;
 class UserController extends Controller
 {
 
-    public function index(Request $request)
-    {
-        $this->switchConnection();
+    // public function index(Request $request)
+    // {
+    //     $this->switchConnection();
 
-        $users = User::all();
+    //     $users = User::all();
         
-    }
+    // }
     public function register(Request $request){
         $request->validate([
             'name'=>'required',
@@ -64,6 +64,22 @@ class UserController extends Controller
         ], 401);
     }
 
+    public function refreshToken(Request $request) {
+
+    
+        $user = $request->user();
+    
+        $user->tokens()->where('id', $user->currentAccessToken()->id)->delete();
+    
+        $token = $user->createToken($user->email)->plainTextToken;
+    
+        return response([
+            'token' => $token,
+            'message' => 'Token refreshed successfully',
+            'status' => 'success',
+        ], 200);
+    }
+
     public function logout(){
         auth()->user()->tokens()->delete();
         return response([
@@ -81,6 +97,17 @@ class UserController extends Controller
         ], 200);
     }
 
+    public function allUsers()
+    {
+        $users = User::all(); 
+
+        return response([
+            'users' => $users,
+            'message' => 'List of all users',
+            'status' => 'success',
+        ], 200);
+    }
+
     public function change_password(Request $request){
         $request->validate([
             'password' => 'required|confirmed',
@@ -93,16 +120,16 @@ class UserController extends Controller
             'status'=>'success'
         ], 200);
     }
-    protected function switchConnection()
-    {
-        $url = request()->url();
+    // protected function switchConnection()
+    // {
+    //     $url = request()->url();
 
-        if (strpos($url, 'api/user2') !== false) {
-            config(['database.default' => 'mysql_second']);
-            DB::setDefaultConnection('mysql_second');
-        } else {
-            config(['database.default' => 'mysql']);
-            DB::setDefaultConnection('mysql');
-        }
-    }
+    //     if (strpos($url, 'api/user2') !== false) {
+    //         config(['database.default' => 'mysql_second']);
+    //         DB::setDefaultConnection('mysql_second');
+    //     } else {
+    //         config(['database.default' => 'mysql']);
+    //         DB::setDefaultConnection('mysql');
+    //     }
+    // }
 }
